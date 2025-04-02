@@ -9,8 +9,19 @@ def sanitize(text):
     # Convert accented characters to non-accented ones
     text = unidecode(text)
     text = text.lower().strip()
+
+    # Replace spaces with single underscore
     text = re.sub(r'\s+', '_', text)
-    text = re.sub(r'[^\w\d_+-]', '', text)  # keep alphanumerics, _, +, -
+
+    # Replace special characters with single underscore
+    text = re.sub(r'[^\w\d_+-]', '_', text)
+
+    # Replace multiple consecutive underscores with a single underscore
+    text = re.sub(r'_+', '_', text)
+
+    # Remove leading/trailing underscores
+    text = text.strip('_')
+
     return text
 
 
@@ -30,20 +41,20 @@ def build_filename(section, description, tags):
 # --- UI ---
 
 
-st.title("Winflow file naming buidler")
+st.title("Winflow file namer")
 
 # Section dropdown
 sections = ['contexte', 'presentation', 'methodologie',
             'consultants', 'references', 'annexes']
-section = st.selectbox("Select section", sections)
+section = st.selectbox("Selectinner la section", sections)
 
 # Description input
-description = st.text_input("Enter short description")
+description = st.text_input("donner un nom court et informatif")
 
 # Dynamic tag input
-st.markdown("### Add Tags")
+st.markdown("### Ajouter un ou plusieurs tags")
 num_tags = st.number_input(
-    "Number of tags", min_value=0, max_value=10, step=1, value=1)
+    "Nombre de tags", min_value=0, max_value=10, step=1, value=0)
 tags = {}
 
 tag_keys = ['partenaire', 'team_structure',
@@ -54,13 +65,22 @@ for i in range(num_tags):
     with cols[0]:
         key = st.selectbox(f"Tag key {i+1}", tag_keys, key=f"tag_key_{i}")
     with cols[1]:
-        value = st.text_input(f"Tag value {i+1}", key=f"tag_value_{i}")
+        # Add help text for the first tag value
+        if i == 0:
+            value = st.text_input(
+                f"Tag value {i+1}",
+                key=f"tag_value_{i}",
+                help="Par exemple auream ou auream+adaltys si valeurs multiples")
+        else:
+            value = st.text_input(
+                f"Tag value {i+1}",
+                key=f"tag_value_{i}")
     tags[key] = value
 
 # Generate filename
 if section and description:
     filename = build_filename(section, description, tags)
-    st.markdown("### Suggested File Name")
+    st.markdown("### Nom du fichier suggéré")
     st.code(filename)
 else:
-    st.info("Please provide both a section and a description.")
+    st.info("Veuillez fournir une section et une description.")
