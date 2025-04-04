@@ -58,7 +58,7 @@ num_tags = st.number_input(
 tags = {}
 
 tag_keys = ['partenaire', 'team_structure',
-            'secteur_activite', 'expertise', "client", "date"]
+            'secteur_activite', 'expertise', 'client', 'date']
 
 for i in range(num_tags):
     cols = st.columns([1, 2])
