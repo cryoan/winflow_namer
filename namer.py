@@ -28,7 +28,7 @@ def sanitize(text):
 def build_filename(section, description, tags):
     section = sanitize(section)
     description = sanitize(description)
-    tag_parts = [f"@{sanitize(k)}:{sanitize(v)}" for k,
+    tag_parts = [f"@{sanitize(k)}|{sanitize(v)}" for k,
                  v in tags.items() if k and v]
     tag_string = ''.join(tag_parts)
 
