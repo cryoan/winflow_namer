@@ -13,8 +13,9 @@ def sanitize(text):
     # Replace spaces with single underscore
     text = re.sub(r'\s+', '_', text)
 
-    # Replace special characters with single underscore
-    text = re.sub(r'[^\w\d_+-]', '_', text)
+    # Replace special characters with single underscore, but preserve decimal points in numbers
+    # This regex matches any non-word character that is not a decimal point between digits
+    text = re.sub(r'(?<!\d)\.(?!\d)|[^\w\d._+-]', '_', text)
 
     # Replace multiple consecutive underscores with a single underscore
     text = re.sub(r'_+', '_', text)
